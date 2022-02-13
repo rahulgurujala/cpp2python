@@ -39,10 +39,7 @@ import re
 
 def is_source(filename):
     suffixes = ('.cpp', '.c', '.cxx', '.c++', '.cc', '.h', '.hpp', '.hxx', '.h++')
-    for s in suffixes:
-        if filename.endswith(s):
-            return True
-    return False
+    return any(filename.endswith(s) for s in suffixes)
 
 def process_line(line):
 
@@ -306,12 +303,12 @@ def main():
     if os.path.isdir(sys.argv[1]):
         for root, dirs, files in os.walk(sys.argv[1]):
             for file in files:
-                in_filename = root + '/' + file
+                in_filename = f'{root}/{file}'
                 if is_source(in_filename):
-                    out_filename = in_filename + '.py' # not ideal
+                    out_filename = f'{in_filename}.py'
                     process_file(in_filename, out_filename)
     elif os.path.isfile(sys.argv[1]):
-        process_file(sys.argv[1], sys.argv[1] + '.py')
+        process_file(sys.argv[1], f'{sys.argv[1]}.py')
     else:
         print('Not a file or directory', sys.argv[1], file=sys.stderr)
         sys.exit(-1)
